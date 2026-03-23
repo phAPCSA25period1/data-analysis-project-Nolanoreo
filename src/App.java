@@ -55,11 +55,12 @@ public class App {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
 
-                String name = parts[0];
-                int typeCount = Integer.parseInt(parts[1]);
-                double hp = Double.parseDouble(parts[2]);
-                double attack = Double.parseDouble(parts[3]);
-                double defense = Double.parseDouble(parts[4]);
+                String name = parts[1]; // Pokemon name
+                // Count types: if Type 2 (parts[3]) is empty, it's single-type, else dual-type
+                int typeCount = parts[3].trim().isEmpty() ? 1 : 2;
+                double hp = Double.parseDouble(parts[4]);
+                double attack = Double.parseDouble(parts[5]);
+                double defense = Double.parseDouble(parts[6]);
 
                 dataList[count] = new Data(name, typeCount, hp, attack, defense);
                 count++;

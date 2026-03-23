@@ -1,28 +1,19 @@
-/**
- * Represents one Pokémon from the dataset.
- * 
- * Each object stores basic stats used to compare
- * single-type and dual-type Pokémon.
- */
 public class Data {
 
-    // 🧱 Attributes (from CSV columns)
-    private String name;
-    private int typeCount;   // 1 = single-type, 2 = dual-type
-    private double hp;
-    private double attack;
-    private double defense;
+    public static final int SINGLE_TYPE = 1;
+    public static final int DUAL_TYPE = 2;
 
-    /**
-     * Constructs a Data object with all attributes.
-     * 
-     * @param name the Pokémon's name
-     * @param typeCount number of types (1 or 2)
-     * @param hp the HP stat
-     * @param attack the attack stat
-     * @param defense the defense stat
-     */
-    public Data(String name, int typeCount, double hp, double attack, double defense) {
+    private String name;
+    private int typeCount;
+    private int hp;
+    private int attack;
+    private int defense;
+
+    public Data(String name, int typeCount, int hp, int attack, int defense) {
+        if (typeCount != 1 && typeCount != 2) {
+            throw new IllegalArgumentException("typeCount must be 1 or 2");
+        }
+
         this.name = name;
         this.typeCount = typeCount;
         this.hp = hp;
@@ -30,59 +21,39 @@ public class Data {
         this.defense = defense;
     }
 
-    /**
-     * Returns the Pokémon's name.
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Returns how many types the Pokémon has.
-     */
     public int getTypeCount() {
         return typeCount;
     }
 
-    /**
-     * Returns the HP stat.
-     */
-    public double getHP() {
+    public int getHP() {
         return hp;
     }
 
-    /**
-     * Returns the attack stat.
-     */
-    public double getAttack() {
+    public int getAttack() {
         return attack;
     }
 
-    /**
-     * Returns the defense stat.
-     */
-    public double getDefense() {
+    public int getDefense() {
         return defense;
     }
 
-    /**
-     * Calculates overall strength as the average
-     * of HP, Attack, and Defense.
-     * 
-     * @return the average stat value
-     */
     public double getStrength() {
         return (hp + attack + defense) / 3.0;
     }
 
-    /**
-     * Returns a readable string of this object's data.
-     */
+    public String getTypeLabel() {
+        return (typeCount == SINGLE_TYPE) ? "Single-type" : "Dual-type";
+    }
+
     @Override
     public String toString() {
-        return name + " | Types: " + typeCount +
-               " | HP: " + hp +
-               " | Attack: " + attack +
-               " | Defense: " + defense;
+        return String.format(
+            "%s | %s | HP: %d | Attack: %d | Defense: %d",
+            name, getTypeLabel(), hp, attack, defense
+        );
     }
 }
