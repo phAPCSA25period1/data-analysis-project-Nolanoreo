@@ -1,30 +1,88 @@
 /**
- * Represents one row from your dataset.
- *
- * TODO:
- *  - Rename the class to match your dataset (e.g., Pokemon, StateData, CountryStat)
- *  - Add at least 3 private attributes based on your CSV columns
- *  - Write a constructor that initializes all attributes
- *  - Add getter methods for the attributes you need in your analysis
- *  - Override toString() to display the object's data
- *  - Add Javadoc comments for the class and all methods
+ * Represents one Pokémon from the dataset.
+ * 
+ * Each object stores basic stats used to compare
+ * single-type and dual-type Pokémon.
  */
 public class Data {
 
-    // TODO: Add at least 3 private attributes
-    // Example:
-    // private String name;
-    // private int population;
-    // private double value;
+    // 🧱 Attributes (from CSV columns)
+    private String name;
+    private int typeCount;   // 1 = single-type, 2 = dual-type
+    private double hp;
+    private double attack;
+    private double defense;
 
+    /**
+     * Constructs a Data object with all attributes.
+     * 
+     * @param name the Pokémon's name
+     * @param typeCount number of types (1 or 2)
+     * @param hp the HP stat
+     * @param attack the attack stat
+     * @param defense the defense stat
+     */
+    public Data(String name, int typeCount, double hp, double attack, double defense) {
+        this.name = name;
+        this.typeCount = typeCount;
+        this.hp = hp;
+        this.attack = attack;
+        this.defense = defense;
+    }
 
-    // TODO: Create a constructor that takes all attributes as parameters
+    /**
+     * Returns the Pokémon's name.
+     */
+    public String getName() {
+        return name;
+    }
 
+    /**
+     * Returns how many types the Pokémon has.
+     */
+    public int getTypeCount() {
+        return typeCount;
+    }
 
-    // TODO: Add getters for attributes you need
+    /**
+     * Returns the HP stat.
+     */
+    public double getHP() {
+        return hp;
+    }
 
-    // TODO: Add other data analysis methods
+    /**
+     * Returns the attack stat.
+     */
+    public double getAttack() {
+        return attack;
+    }
 
-    // TODO: Override toString() to return a readable representation of your object
+    /**
+     * Returns the defense stat.
+     */
+    public double getDefense() {
+        return defense;
+    }
 
+    /**
+     * Calculates overall strength as the average
+     * of HP, Attack, and Defense.
+     * 
+     * @return the average stat value
+     */
+    public double getStrength() {
+        return (hp + attack + defense) / 3.0;
+    }
+
+    /**
+     * Returns a readable string of this object's data.
+     */
+    @Override
+    public String toString() {
+        return name + " | Types: " + typeCount +
+               " | HP: " + hp +
+               " | Attack: " + attack +
+               " | Defense: " + defense;
+    }
 }

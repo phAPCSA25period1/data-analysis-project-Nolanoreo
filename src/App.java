@@ -1,53 +1,152 @@
-import java.io.File;
-
 /**
- * Main application for the Data Analysis Mini‑Project.
- *
- * TODO:
- *  - Update the path to your dataset file
- *  - Read the CSV file using Scanner
- *  - Parse each row and extract the correct columns
- *  - Construct Data objects from each row
- *  - Store them in an array
- *  - Write methods to analyze the dataset (min, max, average, filters, etc.)
- *  - Print insights and answer your guiding question
- *  - Add Javadoc comments for any methods you create
+ * Data Analysis Mini Project
+ * 
+ * This program reads a CSV of Generation 1 Pokémon stats
+ * and compares single-type vs dual-type Pokémon to see
+ * which group is stronger based on HP, Attack, and Defense.
  */
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class App {
+
+    // Simple Data class inside same file
+    static class Data {
+        private String name;
+        private int typeCount;
+        private double hp;
+        private double attack;
+        private double defense;
+
+        public Data(String name, int typeCount, double hp, double attack, double defense) {
+            this.name = name;
+            this.typeCount = typeCount;
+            this.hp = hp;
+            this.attack = attack;
+            this.defense = defense;
+        }
+
+        public int getTypeCount() { return typeCount; }
+        public double getHP() { return hp; }
+        public double getAttack() { return attack; }
+        public double getDefense() { return defense; }
+    }
 
     public static void main(String[] args) {
 
-        // TODO: Update this with your CSV file path
-        File file = new File("data/your_dataset.csv");
+        // 🔧 UPDATE THIS PATH
+        File file = new File("data/pokemon.csv");
 
-        // TODO: Create an array of Data objects to store data
+        Data[] dataList = new Data[200]; // enough for Gen 1
+        int count = 0;
 
+        // 📥 READ FILE
+        try {
+            Scanner scanner = new Scanner(file);
 
-        // TODO: Read file using Scanner
-        // - Skip header if needed
-        // - Loop through rows
-        // - Split each line by commas
-        // - Convert text to numbers when needed
-        // - Create new Data objects
-        // - Add to your array
+            // skip header
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
 
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
 
-        // TODO: Call your analysis methods
-        // Example:
-        // double maxValue = findMaxValue(dataList);
-        // double average = computeAverageValue(dataList);
+                String name = parts[0];
+                int typeCount = Integer.parseInt(parts[1]);
+                double hp = Double.parseDouble(parts[2]);
+                double attack = Double.parseDouble(parts[3]);
+                double defense = Double.parseDouble(parts[4]);
 
+                dataList[count] = new Data(name, typeCount, hp, attack, defense);
+                count++;
+            }
 
-        // TODO: Print insights
-        // - Number of rows loaded
-        // - Min, max, average, or any other findings
-        // - Final answer to your guiding question
+            scanner.close();
 
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+            return;
+        }
 
-        // OPTIONAL TODO:
-        // Add user interaction:
-        // Ask the user what kind of analysis they want to see
+        //  ANALYSIS
+
+        double singleHP = averageStat(dataList, count, 1, "hp");
+        double singleAtk = averageStat(dataList, count, 1, "attack");
+        double singleDef = averageStat(dataList, count, 1, "defense");
+
+        double dualHP = averageStat(dataList, count, 2, "hp");
+        double dualAtk = averageStat(dataList, count, 2, "attack");
+        double dualDef = averageStat(dataList, count, 2, "defense");
+
+        double singleStrength = overallStrength(singleHP, singleAtk, singleDef);
+        double dualStrength = overallStrength(dualHP, dualAtk, dualDef);
+
+        //  OUTPUT
+
+        System.out.println("Rows loaded: " + count);
+        System.out.println();
+
+        System.out.println("Single-type averages:");
+        System.out.println("HP: " + singleHP);
+        System.out.println("Attack: " + singleAtk);
+        System.out.println("Defense: " + singleDef);
+        System.out.println("Overall Strength: " + singleStrength);
+        System.out.println();
+
+        System.out.println("Dual-type averages:");
+        System.out.println("HP: " + dualHP);
+        System.out.println("Attack: " + dualAtk);
+        System.out.println("Defense: " + dualDef);
+        System.out.println("Overall Strength: " + dualStrength);
+        System.out.println();
+
+        //  CONCLUSION
+
+        if (dualStrength > singleStrength) {
+            System.out.println("Conclusion: Dual-type Pokémon are stronger on average.");
+        } else if (singleStrength > dualStrength) {
+            System.out.println("Conclusion: Single-type Pokémon are stronger on average.");
+        } else {
+            System.out.println("Conclusion: Both types are equally strong on average.");
+        }
     }
 
+    /**
+     * Calculates the average of a specific stat for a given type group.
+     * typeFilter: 1 = single-type, 2 = dual-type
+     */
+    public static double averageStat(Data[] data, int size, int typeFilter, String stat) {
+        double sum = 0;
+        int count = 0;
 
+        for (int i = 0; i < size; i++) {
+            if (data[i].getTypeCount() == typeFilter) {
+
+                if (stat.equals("hp")) {
+                    sum += data[i].getHP();
+                } else if (stat.equals("attack")) {
+                    sum += data[i].getAttack();
+                } else if (stat.equals("defense")) {
+                    sum += data[i].getDefense();
+                }
+
+                count++;
+            }
+        }
+
+        if (count == 0) return 0;
+
+        return sum / count;
+    }
+
+    /**
+     * Calculates overall strength as the average of HP, Attack, and Defense.
+     */
+    public static double overallStrength(double hp, double attack, double defense) {
+        return (hp + attack + defense) / 3.0;
+    }
 }
